@@ -4,12 +4,12 @@ cd "$(realpath "$(dirname "$0")")" || exit
 echo "Myaoogle - amateur search engine"
 sudo apt update -y
 mkdir -p apps temp data/share/log
-export PATH="$PATH:/home/$USER/.local/bin:$PWD/bin"
-export MYAOOGLE="$(pwd)"
-export IPFS_PATH=$PWD/data/.ipfs
 echo PATH="$PATH:/home/$USER/.local/bin:$PWD/bin" | sudo tee /etc/environment
 echo MYAOOGLE="$PWD" | sudo tee -a /etc/environment
 echo IPFS_PATH="$PWD/data/.ipfs" | sudo tee -a /etc/environment
+export PATH="$PATH:/home/$USER/.local/bin:$PWD/bin"
+export MYAOOGLE="$(pwd)"
+export IPFS_PATH=$PWD/data/.ipfs
 (echo -e "$(date -u) Myaoogle installation started.") >> $PWD/data/log.txt
 read -p "Enter UI IP: " UIIP
 echo "Myaoogle dirname : [$(realpath "$(dirname "$0")")]"
