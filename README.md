@@ -6,7 +6,7 @@ Myaoogle - amateur search engine / Мяугли - любительская по�
 
 x86_64; Ubuntu 24.04; 2 Core; 4GB RAM; 40GB SSD; 10Mbps WAN; Open port TCP+UDP: 4001
 
-###
+### Installation
 
 1. git clone https://github.com/nulcgit/myaoogle.git && cd myaoogle && bash install.sh
 2. Enter sudo password.
