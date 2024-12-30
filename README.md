@@ -4,7 +4,7 @@ Myaoogle - amateur search engine / Мяугли - любительская по�
 
 ### Requirements
 
-x86_64; Ubuntu 24.04; 2 Core; 4GB RAM; 40GB SSD; 10Mbps WAN; Open port TCP+UDP: 4001
+x86_64; Ubuntu 24.04; 2 Core; 4GB RAM; 40GB SSD; 10Mbps WAN; Open port TCP+UDP: 4003
 
 ### Installation
 

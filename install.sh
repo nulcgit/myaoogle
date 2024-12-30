@@ -1,4 +1,122 @@
 #!/usr/bin/env bash
 
+cd "$(realpath "$(dirname "$0")")" || exit
 echo "Myaoogle - amateur search engine"
 sudo apt update -y
+mkdir -p apps temp data/share/log
+export MYAOOGLE="$(pwd)"
+export IPFS_PATH=$PWD/data/.ipfs
+echo PATH="$PATH:/home/$USER/.local/bin:$PWD/bin" | sudo tee /etc/environment
+echo MYAOOGLE="$PWD" | sudo tee -a /etc/environment
+echo IPFS_PATH="$PWD/data/.ipfs" | sudo tee -a /etc/environment
+(echo -e "$(date -u) Myaoogle installation started.") >> $PWD/data/log.txt
+read -p "Enter UI IP: " UIIP
+echo "Myaoogle dirname : [$(realpath "$(dirname "$0")")]"
+read -p "Enter IPFS port(default 4003): " IPFSPORT
+if [ -z "$IPFSPORT" ]; then
+    IPFSPORT=4003
+fi
+
+sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -yq
+sudo DEBIAN_FRONTEND=noninteractive apt install -y git docker.io docker-compose-v2 build-essential python3-dev python3-pip python3-venv tmux cron iputils-ping net-tools unzip
+sudo usermod -aG docker $USER
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+pip install pandas -q
+
+sudo mkdir /ipfs /ipns
+sudo chmod 777 /ipfs
+sudo chmod 777 /ipns
+wget -O temp/kubo.tar.gz https://github.com/ipfs/kubo/releases/download/v0.32.1/kubo_v0.32.1_linux-amd64.tar.gz
+tar xvzf temp/kubo.tar.gz -C temp
+sudo mv temp/kubo/ipfs /usr/local/bin/ipfs
+ipfs init --profile server
+ipfs config --json Experimental.FilestoreEnabled true
+ipfs config --json Pubsub.Enabled true
+ipfs config --json Ipns.UsePubsub true
+ipfs config profile apply lowpower
+ipfs config Addresses.Gateway /ip4/127.0.0.1/tcp/8082
+ipfs config Addresses.API /ip4/127.0.0.1/tcp/5002
+sed -i "s/4001/$IPFSPORT/g" $PWD/data/.ipfs/config
+sed -i "s/104.131.131.82\/tcp\/$IPFSPORT/104.131.131.82\/tcp\/4001/g" $PWD/data/.ipfs/config
+sed -i "s/104.131.131.82\/udp\/$IPFSPORT/104.131.131.82\/udp\/4001/g" $PWD/data/.ipfs/config
+echo -e "\
+[Unit]\n\
+Description=InterPlanetary File System (IPFS) daemon\n\
+Documentation=https://docs.ipfs.tech/\n\
+After=network.target\n\
+\n\
+[Service]\n\
+MemorySwapMax=0\n\
+TimeoutStartSec=infinity\n\
+Type=notify\n\
+User=$USER\n\
+Group=$USER\n\
+Environment=IPFS_PATH=$PWD/data/.ipfs\n\
+ExecStart=/usr/local/bin/ipfs daemon --enable-gc --mount --mount-ipfs=/ipfs --mount-ipns=/ipns --migrate=true\n\
+Restart=on-failure\n\
+KillSignal=SIGINT\n\
+\n\
+[Install]\n\
+WantedBy=default.target\n\
+" | sudo tee /etc/systemd/system/ipfs.service
+sudo systemctl daemon-reload
+sudo systemctl enable ipfs
+sudo systemctl restart ipfs
+cat <<EOF >>$PWD/bin/ipfssub.sh
+#!/usr/bin/env bash
+/usr/local/bin/ipfs pubsub sub myaoogle >> $PWD/data/sub.txt
+EOF
+chmod +x $PWD/bin/ipfssub.sh
+echo -e "\
+[Unit]\n\
+Description=InterPlanetary File System (IPFS) subscription\n\
+After=network.target\n\
+\n\
+[Service]\n\
+Type=simple\n\
+User=$USER\n\
+Group=$USER\n\
+Environment=IPFS_PATH=$PWD/data/.ipfs\n\
+ExecStartPre=/usr/bin/sleep 5\n\
+ExecStart=$PWD/bin/ipfssub.sh\n\
+Restart=on-failure\n\
+KillSignal=SIGINT\n\
+\n\
+[Install]\n\
+WantedBy=default.target\n\
+" | sudo tee /etc/systemd/system/ipfssub.service
+sudo systemctl daemon-reload
+sudo systemctl enable ipfssub
+sudo systemctl restart ipfssub
+sleep 9
+
+cd $MYAOOGLE
+sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt install -y ca-certificates curl gnupg
+sudo rm /etc/apt/keyrings/nodesource.gpg
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+NODE_MAJOR=22
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+sudo apt-get update && sudo apt-get install nodejs -y
+node -v
+npm -v
+
+echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
+@reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
+* * * * * su $USER -c \"bash $PWD/bin/cron.sh\"\n\
+0 0 * * * su $USER -c \"cd $PWD && git pull --rebase\"\n\
+" | sudo crontab -
+echo -n "IPFS status:"
+ipfs cat QmYwoMEk7EvxXi6LcS2QE6GqaEYQGzfGaTJ9oe1m2RBgfs/test.txt
+echo -n "IPFSmount status:"
+cat /ipfs/QmYwoMEk7EvxXi6LcS2QE6GqaEYQGzfGaTJ9oe1m2RBgfs/test.txt
+cd $MYAOOGLE
+rm -rf temp
+mkdir temp
+str=$(ipfs id) && echo $str | cut -c10-61 > $PWD/data/id.txt
+(echo -n "$(date -u) Myaoogle system is installed. ID=" && cat $PWD/data/id.txt) >> $PWD/data/log.txt
+ipfspub 'Initial message'
+ipfs pubsub pub myaoogle $PWD/data/log.txt
+echo "hash time log" > data/share/list.txt
+sudo reboot
