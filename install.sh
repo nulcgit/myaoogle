@@ -4,6 +4,7 @@ cd "$(realpath "$(dirname "$0")")" || exit
 echo "Myaoogle - amateur search engine"
 sudo apt update -y
 mkdir -p apps temp data/share/log
+export PATH="$PATH:/home/$USER/.local/bin:$PWD/bin"
 export MYAOOGLE="$(pwd)"
 export IPFS_PATH=$PWD/data/.ipfs
 echo PATH="$PATH:/home/$USER/.local/bin:$PWD/bin" | sudo tee /etc/environment
