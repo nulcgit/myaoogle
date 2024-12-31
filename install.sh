@@ -103,6 +103,15 @@ sudo apt-get update && sudo apt-get install nodejs -y
 node -v
 npm -v
 
+wget -O temp/ygg.deb https://github.com/yggdrasil-network/yggdrasil-go/releases/download/v0.5.12/yggdrasil-0.5.12-amd64.deb
+sudo dpkg -i temp/ygg.deb
+sudo yggdrasil -genconf | tee /etc/yggdrasil/yggdrasil.conf
+sudo sed -i "s/Peers\: \[\]/Peers\: \[\n    tls\:\/\/185.103.109.63\:65534\n    tcp\:\/\/193.107.20.230\:7743\n    quic\:\/\/vpn.itrus.su\:7993\n  ]/g" /etc/yggdrasil/yggdrasil.conf
+sudo sed -i "s/NodeInfo\: {}/NodeInfo\: {\n  name: myaoogle$(date -u +%Y%m%d%H%M%S)$HOSTNAME\n  }/g" /etc/yggdrasil/yggdrasil.conf
+sudo systemctl daemon-reload
+sudo systemctl enable yggdrasil
+sudo systemctl restart yggdrasil
+
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
 @reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
 * * * * * su $USER -c \"bash $PWD/bin/cron.sh\"\n\
