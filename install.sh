@@ -111,6 +111,7 @@ sudo sed -i "s/NodeInfo\: {}/NodeInfo\: {\n  name: myaoogle$(date -u +%Y%m%d%H%M
 sudo systemctl daemon-reload
 sudo systemctl enable yggdrasil
 sudo systemctl restart yggdrasil
+yggbootstrap.sh
 ping -6 -c 6 21e:a51c:885b:7db0:166e:927:98cd:d186 #Yggdrasil Web directory
 
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
