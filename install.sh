@@ -11,7 +11,6 @@ export PATH="$PATH:/home/$USER/.local/bin:$PWD/bin"
 export MYAOOGLE="$(pwd)"
 export IPFS_PATH=$PWD/data/.ipfs
 (echo -e "$(date -u) Myaoogle installation started.") >> $PWD/data/log.txt
-read -p "Enter UI IP: " UIIP
 echo "Myaoogle dirname : [$(realpath "$(dirname "$0")")]"
 read -p "Enter IPFS port(default 4003): " IPFSPORT
 if [ -z "$IPFSPORT" ]; then
@@ -113,6 +112,44 @@ sudo systemctl enable yggdrasil
 sudo systemctl restart yggdrasil
 yggbootstrap.sh
 ping -6 -c 6 21e:a51c:885b:7db0:166e:927:98cd:d186 #Yggdrasil Web directory
+
+export YGGIP=$(ip -6 addr show tun0 | grep 'inet6' | grep 'scope global' | awk '{print $2}' | cut -d'/' -f1)
+echo YGGIP="$YGGIP" | sudo tee -a /etc/environment
+sudo apt install -y nginx software-properties-common
+sudo add-apt-repository -y ppa:ondrej/php
+sudo apt update
+sudo systemctl start nginx
+sudo systemctl enable nginx
+echo 'server {
+    listen 127.0.0.1:80;' | sudo tee /etc/nginx/sites-available/default
+echo "    listen [$YGGIP]:80;" | sudo tee -a /etc/nginx/sites-available/default
+echo '    root /var/www/html;
+    index index.php index.html index.htm;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
+sudo apt install -y php8.1 php8.1-fpm php8.1-cli php8.1-mysql php8.1-curl php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
+sudo systemctl restart php8.1-fpm
+sudo systemctl enable php8.1-fpm
+echo '<?php
+phpinfo();
+?>' | sudo tee /var/www/html/phpinfo.php
+sudo systemctl restart nginx
 
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
 @reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
