@@ -110,8 +110,9 @@ sudo sed -i "s/NodeInfo\: {}/NodeInfo\: {\n  name: myaoogle$(date -u +%Y%m%d%H%M
 sudo systemctl daemon-reload
 sudo systemctl enable yggdrasil
 sudo systemctl restart yggdrasil
-yggbootstrap.sh
+sleep 5
 ping -6 -c 6 21e:a51c:885b:7db0:166e:927:98cd:d186 #Yggdrasil Web directory
+yggbootstrap.sh
 
 export YGGIP=$(ip -6 addr show tun0 | grep 'inet6' | grep 'scope global' | awk '{print $2}' | cut -d'/' -f1)
 echo YGGIP="$YGGIP" | sudo tee -a /etc/environment
