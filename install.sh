@@ -135,7 +135,7 @@ echo '    root /var/www/html;
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
@@ -145,8 +145,8 @@ echo '    root /var/www/html;
     }
 }' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
 sudo apt install -y php8.4 php8.4-fpm php8.4-mysql php8.4-curl php8.4-gd php8.4-mbstring php8.4-xml php8.4-zip php8.4-soap php8.4-intl
-sudo systemctl restart php8.1-fpm
-sudo systemctl enable php8.1-fpm
+sudo systemctl restart php8.4-fpm
+sudo systemctl enable php8.4-fpm
 sudo rm -rf /var/www/html/*
 echo 'OK!' | tee /var/www/html/index.html
 sudo systemctl restart nginx
