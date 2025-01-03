@@ -153,6 +153,7 @@ sudo systemctl restart nginx
 
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
 @reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
+@reboot sleep 9; systemctl restart nginx\n\
 * * * * * su $USER -c \"bash $PWD/bin/cron.sh\"\n\
 0 0 * * * su $USER -c \"cd $PWD && git pull --rebase\"\n\
 " | sudo crontab -
