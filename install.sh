@@ -120,6 +120,7 @@ sudo add-apt-repository -y ppa:ondrej/php
 sudo apt update
 sudo systemctl start nginx
 sudo systemctl enable nginx
+sudo chmod 777 /var/www/html
 echo 'server {
     listen 127.0.0.1:80;' | sudo tee /etc/nginx/sites-available/default
 echo "    listen [$YGGIP]:80;" | sudo tee -a /etc/nginx/sites-available/default
@@ -146,9 +147,8 @@ echo '    root /var/www/html;
 sudo apt install -y php8.1 php8.1-fpm php8.1-cli php8.1-mysql php8.1-curl php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
 sudo systemctl restart php8.1-fpm
 sudo systemctl enable php8.1-fpm
-echo '<?php
-phpinfo();
-?>' | sudo tee /var/www/html/phpinfo.php
+sudo rm -rf /var/www/html/*
+echo 'OK!' | tee /var/www/html/index.html
 sudo systemctl restart nginx
 
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
