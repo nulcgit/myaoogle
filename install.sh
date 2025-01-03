@@ -144,7 +144,7 @@ echo '    root /var/www/html;
         deny all;
     }
 }' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-sudo apt install -y php8.1 php8.1-fpm php8.1-cli php8.1-mysql php8.1-curl php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip
+sudo apt install -y php8.4 php8.4-fpm php8.4-mysql php8.4-curl php8.4-gd php8.4-mbstring php8.4-xml php8.4-zip php8.4-soap php8.4-intl
 sudo systemctl restart php8.1-fpm
 sudo systemctl enable php8.1-fpm
 sudo rm -rf /var/www/html/*
