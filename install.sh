@@ -41,6 +41,8 @@ ipfs config Addresses.API /ip4/127.0.0.1/tcp/5002
 sed -i "s/4001/$IPFSPORT/g" $PWD/data/.ipfs/config
 sed -i "s/104.131.131.82\/tcp\/$IPFSPORT/104.131.131.82\/tcp\/4001/g" $PWD/data/.ipfs/config
 sed -i "s/104.131.131.82\/udp\/$IPFSPORT/104.131.131.82\/udp\/4001/g" $PWD/data/.ipfs/config
+ipfs config --json Swarm.EnableAutoNATService true
+ipfs config --json Swarm.EnableAutoRelay true
 echo -e "\
 [Unit]\n\
 Description=InterPlanetary File System (IPFS) daemon\n\
