@@ -11,7 +11,7 @@ for item in "$MYAOOGLE/data/share"/*; do
         if ! awk '{print $3}' list.txt | grep -q "^$folder_name"; then
                     echo "Folder not in list: $folder_name"
             current_date="$(date -u '+%Y%m%d-%H%M%S')"
-            current_folder="$current_date-$folder_name"
+            current_folder="$current_date-${folder_name// /-}"
             mv "$folder_name" "$current_folder"
             sleep 3
             hash=$(ipfs add -r --nocopy -Q "$MYAOOGLE/data/share/$current_folder")
