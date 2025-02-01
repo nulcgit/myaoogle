@@ -9,4 +9,5 @@ if [ "$(date -u '+%H')" = "00" ] && [ "$(date -u '+%M')" = "00" ]; then
 fi
 if [ "$(date -u '+%M')" = "00" ] || [ "$(date -u '+%M')" = "30" ]; then
 ipfspub 'Ok!'
+apps/znagro/znagro
 fi
