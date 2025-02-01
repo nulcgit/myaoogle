@@ -4,10 +4,10 @@ cd "$(realpath "$(dirname "$0")")" || exit
 echo "Myaoogle - amateur search engine"
 sudo apt update -y
 mkdir -p apps temp data/share/log
-echo PATH="$PATH:/home/$USER/.local/bin:$PWD/bin" | sudo tee /etc/environment
+echo PATH="$PATH:/home/$USER/.local/bin:$PWD/bin:/usr/local/go/bin" | sudo tee /etc/environment
 echo MYAOOGLE="$PWD" | sudo tee -a /etc/environment
 echo IPFS_PATH="$PWD/data/.ipfs" | sudo tee -a /etc/environment
-export PATH="$PATH:/home/$USER/.local/bin:$PWD/bin"
+export PATH="$PATH:/home/$USER/.local/bin:$PWD/bin:/usr/local/go/bin"
 export MYAOOGLE="$(pwd)"
 export IPFS_PATH=$PWD/data/.ipfs
 (echo -e "$(date -u) Myaoogle installation started.") >> $PWD/data/log.txt
@@ -153,6 +153,9 @@ sudo systemctl enable php8.4-fpm
 sudo rm -rf /var/www/html/*
 echo 'OK!' | tee /var/www/html/index.html
 sudo systemctl restart nginx
+
+wget -O temp/go.tar.gz https://go.dev/dl/go1.23.5.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf temp/go.tar.gz
 
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
 @reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
