@@ -1,1 +1,1 @@
-Zaprert - DPI bypass multi platform
+Zapret - DPI bypass multi platform
