@@ -8,6 +8,6 @@ if [ "$(date -u '+%H')" = "00" ] && [ "$(date -u '+%M')" = "00" ]; then
     ipfspub $hash
 fi
 if [ "$(date -u '+%M')" = "00" ] || [ "$(date -u '+%M')" = "30" ]; then
-ipfspub 'Ok!'
-apps/znagro/znagro
+execution_time=$(time (apps/znagro/znagro > /dev/null 2>&1) 2>&1)
+ipfspub "Ok! Znagro execution time: $execution_time"
 fi
