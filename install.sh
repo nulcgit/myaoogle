@@ -159,6 +159,9 @@ wget -O temp/go.tar.gz https://go.dev/dl/go1.23.5.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf temp/go.tar.gz
 cd apps && git clone https://github.com/nulcgit/znagro.git && cd znagro && go build -ldflags "-s -w" . && cd ../..
 
+wget -O temp/dmd.deb https://downloads.dlang.org/releases/2.x/2.109.1/dmd_2.109.1-0_amd64.deb
+sudo dpkg -i temp/dmd.deb
+
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
 @reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
 @reboot sleep 9; systemctl restart yggdrasil; systemctl restart nginx\n\
