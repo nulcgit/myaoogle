@@ -155,7 +155,7 @@ echo 'OK!' | tee /var/www/html/index.html
 sudo systemctl restart nginx
 
 mkdir ~/go ~/go/bin ~/go/src ~/go/pkg
-wget -O temp/go.tar.gz https://go.dev/dl/go1.23.5.linux-amd64.tar.gz
+wget -O temp/go.tar.gz https://go.dev/dl/go1.23.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf temp/go.tar.gz
 cd apps && git clone https://github.com/nulcgit/znagro.git && cd znagro && go build -ldflags "-s -w" . && cd ../..
 
