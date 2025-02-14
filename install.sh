@@ -28,7 +28,7 @@ pip install pandas -q
 sudo mkdir /ipfs /ipns
 sudo chmod 777 /ipfs
 sudo chmod 777 /ipns
-wget -O temp/kubo.tar.gz https://github.com/ipfs/kubo/releases/download/v0.33.1/kubo_v0.33.1_linux-amd64.tar.gz
+wget -O temp/kubo.tar.gz https://github.com/ipfs/kubo/releases/download/v0.33.2/kubo_v0.33.2_linux-amd64.tar.gz
 tar xvzf temp/kubo.tar.gz -C temp
 sudo mv temp/kubo/ipfs /usr/local/bin/ipfs
 ipfs init --profile server
