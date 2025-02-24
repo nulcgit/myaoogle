@@ -159,6 +159,16 @@ wget -O temp/go.tar.gz https://go.dev/dl/go1.23.6.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf temp/go.tar.gz
 cd apps && git clone https://github.com/nulcgit/znagro.git && cd znagro && go build -ldflags "-s -w" . && cd ../..
 
+wget -O temp/a/autonomi.zip https://github.com/maidsafe/autonomi/releases/download/rc-2025.1.2.5/2025.1.2.5.autonomi.x86_64-unknown-linux-musl.zip
+cd temp/a
+unzip autonomi.zip
+rm autonomi.zip
+chmod +x ./*
+sudo mv ./* /usr/local/bin
+antup --version
+ant --version
+cd ../..
+
 echo -e "$(sudo crontab -l)\nPATH=$PATH\nMYAOOGLE=$PWD\nIPFS_PATH=$IPFS_PATH\n\
 @reboot echo \"\$(date -u) System is rebooted\" >> $PWD/data/log.txt\n\
 @reboot sleep 9; systemctl restart yggdrasil; systemctl restart nginx\n\
