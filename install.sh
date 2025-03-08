@@ -23,7 +23,7 @@ sudo usermod -aG docker $USER
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
-pip install pandas -q
+pip install reader -q
 
 sudo mkdir /ipfs /ipns
 sudo chmod 777 /ipfs
