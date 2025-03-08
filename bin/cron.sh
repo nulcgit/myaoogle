@@ -8,7 +8,7 @@ if [ "$(date -u '+%H')" = "00" ] && [ "$(date -u '+%M')" = "00" ]; then
     ipfspub $hash
 fi
 if [ "$(date -u '+%M')" = "00" ] || [ "$(date -u '+%M')" = "30" ]; then
- execution_time=$( { time : > /dev/null 2>&1; } 2>&1 )
+ execution_time=$( { time readerupdate > /dev/null 2>&1; } 2>&1 )
  real_time=$(echo "$execution_time" | grep real | awk '{print $2}')
  ipfspub "Ok! Halfhour execution time: $real_time"
 fi
