@@ -3,5 +3,6 @@
 cd "$(realpath "$(dirname "$0")")"/.. || exit
 source .venv/bin/activate
 python3 readerupdate.py > temp/readerupdate.txt
+sed -i "s/passkey=[^ ]*/passkey=X\'/g" temp/readerupdate.txt
 echo -e "$(date -u "+%Y%m%d-%H%M%S")-$(cat $MYAOOGLE/data/id.txt)-$(hostname) $(cat temp/readerupdate.txt)" | ipfs pubsub pub myaoogle
-rm temp/readerupdate.txt
+#rm temp/readerupdate.txt

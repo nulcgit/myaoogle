@@ -24,6 +24,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
 pip install reader -q
+echo "url	name	description" > data/feeds.tsv
 
 sudo mkdir /ipfs /ipns
 sudo chmod 777 /ipfs
