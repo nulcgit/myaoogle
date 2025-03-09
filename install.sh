@@ -23,7 +23,7 @@ sudo usermod -aG docker $USER
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip
-pip install reader -q
+pip install reader[cli,app] -q
 echo "url	name	description" > data/feeds.tsv
 
 sudo mkdir /ipfs /ipns
